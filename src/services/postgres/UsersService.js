@@ -6,7 +6,7 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 
 class UserServices {
   constructor() {
-    this.pool = new Pool();
+    this._pool = new Pool();
   }
 
   async addUser({ username, password, fullname }) {
@@ -20,7 +20,7 @@ class UserServices {
       values: [id, username, hashedPassword, fullname],
     };
 
-    const result = await this.pool.query(query);
+    const result = await this._pool.query(query);
 
     if (!result.rows.length) {
       throw new InvariantError('User gagal ditambahkan');
@@ -35,9 +35,9 @@ class UserServices {
       values: [username],
     };
 
-    const result = await this.pool.query(query);
+    const result = await this._pool.query(query);
 
-    if (result.rowCount > 0) {
+    if (result.rows.length > 0) {
       throw new InvariantError('Gagal menambahkan user. Username sudah digunakan.');
     }
   }
@@ -48,7 +48,7 @@ class UserServices {
       values: [userId],
     };
 
-    const result = await this.pool.query(query);
+    const result = await this._pool.query(query);
 
     if (!result.rows.length) {
       throw new NotFoundError('User tidak ditemukan');
